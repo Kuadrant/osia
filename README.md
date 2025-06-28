@@ -79,6 +79,7 @@ default:
   dns:
     route53:
       ttl: 0
+      credentials_file: 'path/to/file' # will still use 'default' profile
     nsupdate:
       server: ''
       zone: ''

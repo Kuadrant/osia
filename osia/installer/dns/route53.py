@@ -14,32 +14,44 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Module implements dns methods to work with route53 provider"""
+import configparser
 import logging
+
 import boto3
 
 from osia.installer.clouds.base import AbstractInstaller
 from osia.installer.dns.base import DNSUtil
 
 
-def _get_connection():
-    return boto3.client('route53')
+def _get_connection(**kwargs):
+    return boto3.client('route53', **kwargs)
 
 
 class Route53Provider(DNSUtil):
     """Class implements DNSUtil base specific for route53"""
-    def __init__(self, api_ip=None, apps_ip=None, **kwargs):
+    def __init__(self, api_ip=None, apps_ip=None, credentials_file=None, **kwargs):
         super().__init__(**kwargs)
 
         self.zone_id = None
         self.api_ip = api_ip
         self.apps_ip = apps_ip
+        self.credentials_file = credentials_file
+
+        self.boto_kwargs = {}
+
+        if self.credentials_file:
+            config = configparser.ConfigParser()
+            config.read(self.credentials_file)
+
+            self.boto_kwargs["aws_access_key_id"] = config["default"]["aws_access_key_id"]
+            self.boto_kwargs["aws_secret_access_key"] = config["default"]["aws_secret_access_key"]
 
     def provider_name(self):
         return 'route53'
 
     def _get_hosted_zone(self):
         if self.zone_id is None:
-            zones = _get_connection().list_hosted_zones()['HostedZones']
+            zones = _get_connection(**self.boto_kwargs).list_hosted_zones()['HostedZones']
             result = [v['Id'] for v in zones if v['Name'] == (self.base_domain + ".")]
             if len(result) == 0:
                 raise Exception(f"Unable to find hosted_zone {self.base_domain} in zone list.")
@@ -61,7 +73,7 @@ class Route53Provider(DNSUtil):
                  }
             ]
         }
-        conn = _get_connection()
+        conn = _get_connection(**self.boto_kwargs)
         try:
             conn.change_resource_record_sets(
                 HostedZoneId=self._get_hosted_zone(),
