@@ -21,6 +21,10 @@ import boto3
 from .base import AbstractInstaller
 
 
+def _get_connection(*args):
+    return boto3.client('ec2', *args)
+
+
 class AWSInstaller(AbstractInstaller):
     """Object containing all configuration related
     to aws installation"""
@@ -60,9 +64,9 @@ def get_free_region(order_list: List[str]) -> Optional[str]:
     if provided list is empty, it searches all regions"""
     candidates = order_list[:]
     if len(candidates) == 0:
-        candidates = [v['RegionName'] for v in boto3.client('ec2').describe_regions()['Regions']]
+        candidates = [v['RegionName'] for v in _get_connection().describe_regions()['Regions']]
     for candidate in candidates:
-        region = boto3.client('ec2', candidate)
+        region = _get_connection(candidate)
         count = len(region.describe_vpcs()['Vpcs'])
         if count < 5:
             logging.debug("Selected region %s", candidate)
