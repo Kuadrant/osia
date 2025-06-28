@@ -19,10 +19,7 @@ clean:
 
 check: setup_poetry flake8 pylint
 
-flake8: setup_poetry
-	poetry run flake8 osia --max-line-length 100 --show-source --statistics
-
-pylint mypy: setup_poetry
+pylint flake8 mypy: setup_poetry
 	poetry run $@ osia
 
 black-check: setup_poetry

@@ -36,11 +36,11 @@ python = "^3.10"
 semantic-version = "^2.10.0"
 urllib3 = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 boto3-stubs = "^1.35.39"
 flake8 = "*"
 ipython = "*"
-mypy = "^1.11.2"
+mypy = "*"
 pylint = "*"
 recommonmark = "*"
 sphinx = "*"
