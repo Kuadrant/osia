@@ -54,3 +54,15 @@ types-requests = "*"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+exclude = [
+        'osia/cli.py',
+        'osia/config/config.py',
+        'osia/installer/clouds/base.py',
+        'osia/installer/dns/base.py',
+        'osia/installer/downloader/image.py',
+        'osia/installer/downloader/install.py',
+        'osia/installer/downloader/utils.py',
+
+]
