@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Module implements dns methods to work with route53 provider"""
-import configparser
 import logging
 
 import boto3
@@ -29,22 +28,17 @@ def _get_connection(**kwargs):
 
 class Route53Provider(DNSUtil):
     """Class implements DNSUtil base specific for route53"""
-    def __init__(self, api_ip=None, apps_ip=None, credentials_file=None, **kwargs):
+    def __init__(self, api_ip=None, apps_ip=None, aws_access_key_id=None, aws_secret_access_key=None, **kwargs):
         super().__init__(**kwargs)
 
         self.zone_id = None
         self.api_ip = api_ip
         self.apps_ip = apps_ip
-        self.credentials_file = credentials_file
 
-        self.boto_kwargs = {}
-
-        if self.credentials_file:
-            config = configparser.ConfigParser()
-            config.read(self.credentials_file)
-
-            self.boto_kwargs["aws_access_key_id"] = config["default"]["aws_access_key_id"]
-            self.boto_kwargs["aws_secret_access_key"] = config["default"]["aws_secret_access_key"]
+        self.boto_kwargs = {
+            "aws_access_key_id": aws_access_key_id,
+            "aws_secret_access_key": aws_secret_access_key,
+        }
 
     def provider_name(self):
         return 'route53'

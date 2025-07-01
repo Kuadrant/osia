@@ -3,6 +3,7 @@ Module implements merging of default configuration obtained via Dynaconf
 with command line arguments.
 """
 import argparse
+import configparser
 import logging
 import warnings
 from typing import Dict, Optional
@@ -65,6 +66,15 @@ def read_config(args: argparse.Namespace, default_args: Dict) -> Dict:
              for j, i in default_args['dns'].items()
              if vars(args)[j] is not None}
         )
+        if 'credentials_file' in result['dns']['conf'].keys():
+            config = configparser.ConfigParser()
+            config.read(result['dns']['conf']['credentials_file'])
+
+            result['dns']['conf'].update({
+                "aws_access_key_id": config["default"]["aws_access_key_id"],
+                "aws_secret_access_key": config["default"]["aws_secret_access_key"],
+            })
+
     if args.cloud is not None:
         cloud_defaults = _resolve_cloud_name(args)
         result['cloud_name'] = args.cloud
@@ -73,6 +83,15 @@ def read_config(args: argparse.Namespace, default_args: Dict) -> Dict:
             {j: i['proc'](vars(args)[j]) for j, i in default_args['install'].items()
              if vars(args)[j] is not None}
         )
+
+        if 'credentials_file' in result['cloud'].keys():
+            config = configparser.ConfigParser()
+            config.read(result['cloud']['credentials_file'])
+
+            result['cloud'].update({
+                "aws_access_key_id": config["default"]["aws_access_key_id"],
+                "aws_secret_access_key": config["default"]["aws_secret_access_key"],
+            })
 
         if result['dns'] is not None:
             result['dns']['conf'].update({
