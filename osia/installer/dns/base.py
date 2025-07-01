@@ -14,24 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Module contains basics and common functionality to set up DNS."""
-from abc import ABC, abstractmethod
+from __future__ import annotations
+
 import json
+from abc import ABC, abstractmethod
 from os import path
 from pathlib import Path
-from typing import ClassVar, Optional
+from typing import Protocol
 
 from osia.installer.clouds.base import AbstractInstaller
 
 
 class DNSProvider:
     """Class implements dynamic provier of DNSUtil base class"""
+
     __instance = None
 
     # pylint: disable=protected-access
     @classmethod
-    def register_provider(cls, name: str, clazz: ClassVar):
-        """Method to dynamically register new implementation of
-        DNSUtil"""
+    def register_provider(cls, name: str, clazz: type[_DNSUtil]):
+        """Method to dynamically register new implementation of DNSUtil"""
         cls.instance().__add_provider(name, clazz)
 
     @classmethod
@@ -41,16 +43,16 @@ class DNSProvider:
             cls.__instance = cls()
         return cls.__instance
 
-    def __init__(self):
-        self.providers = {}
+    def __init__(self) -> None:
+        self.providers: dict[str, type[_DNSUtil]] = {}
 
-    def __add_provider(self, name: str, clazz: ClassVar):
+    def __add_provider(self, name: str, clazz: type[_DNSUtil]):
         self.providers[name] = clazz
 
-    def __getitem__(self, name: str) -> ClassVar:
+    def __getitem__(self, name: str) -> type[_DNSUtil]:
         return self.providers[name]
 
-    def load(self, directory: str) -> Optional['DNSUtil']:
+    def load(self, directory: str) -> _DNSUtil | None:
         """Method loads saved configuration of specific DNSUtil from
         file"""
         for k in self.providers:
@@ -61,12 +63,39 @@ class DNSProvider:
         return None
 
 
+class _DNSUtil(Protocol):
+    """Protocol for DNSUtils"""
+
+    @abstractmethod
+    def add_api_domain(self, instance: AbstractInstaller):
+        """Method registers api domain in selected provider"""
+
+    @abstractmethod
+    def add_apps_domain(self, instance: AbstractInstaller):
+        """Method registers apps domain in selected provider"""
+
+    @abstractmethod
+    def delete_domains(self):
+        """Method deletes all registered domains in provider"""
+
+    @abstractmethod
+    def provider_name(self):
+        """Method stores current configuration on DNS provider to $provider_name.json"""
+
+    def marshall(self, out_dir: str):
+        """Method stores current configuration on DNS provider to $provider_name.json"""
+
+    def unmarshall(self, in_dir: str):
+        """Method loads stored configuration of DNS into provider object"""
+
+    def delete_file(self):
+        """Method removes unneeded configuration file"""
+
+
 class DNSUtil(ABC):
-    """Class implements basic settings for """
-    def __init__(self,
-                 cluster_name=None,
-                 base_domain=None,
-                 ttl=None):
+    """Class implements basic settings for"""
+
+    def __init__(self, cluster_name=None, base_domain=None, ttl=None):
         self.cluster_name = cluster_name
         self.base_domain = base_domain
         self.ttl = ttl
