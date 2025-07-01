@@ -17,21 +17,22 @@
 creation.
 It also implements logic to obtain correct specification
 for specified installation platform"""
+from __future__ import annotations
 
 import logging
 
 from abc import abstractmethod, ABC
 from subprocess import run
-from typing import ClassVar, Optional
+from typing import Optional
 from jinja2 import Environment, PackageLoader
-from semantic_version import Version, SimpleSpec
+from semantic_version import Version, SimpleSpec  # type: ignore[import-untyped]
 
 
 class AbstractInstaller(ABC):
     """Base object for configuration of install-config"""
     # pylint: disable=too-many-instance-attributes
 
-    __env: Environment = None
+    __env: Environment | None = None
 
     # pylint: disable=too-many-arguments
     def __init__(self,
@@ -140,10 +141,10 @@ class InstallerProvider:
     """Class implements dynamic provider of registered platform specific
     implementations of AbstractInstaller.
     Class implements singleton design pattern."""
-    __instance: "InstallerProvider" = None
+    __instance: InstallerProvider | None = None
 
     @classmethod
-    def instance(cls) -> "InstallerProvider":
+    def instance(cls) -> InstallerProvider:
         """Method to obtains singleton instance."""
         if cls.__instance is None:
             cls.__instance = cls()
@@ -157,9 +158,9 @@ class InstallerProvider:
     def __init__(self):
         self.installers = {}
 
-    def add_installer(self, name: str, instance: ClassVar):
+    def add_installer(self, name: str, instance: AbstractInstaller):
         """Insert concrete implementation of AbstractInstaller into the registry"""
         self.installers[name] = instance
 
-    def __getitem__(self, name: str) -> ClassVar:
+    def __getitem__(self, name: str) -> AbstractInstaller:
         return self.installers[name]
