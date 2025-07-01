@@ -62,5 +62,4 @@ exclude = [
         'osia/installer/clouds/base.py',
         'osia/installer/downloader/image.py',
         'osia/installer/downloader/install.py',
-        'osia/installer/downloader/utils.py',
 ]
