@@ -74,8 +74,9 @@ default:
         pull_secret_file: ''
         certificate_bundle_file: ''
         ssh_key_file: ''
-        worker_flavor: '' 
+        worker_flavor: ''
         list_of_regions: []
+        credentials_file: 'path/to/file' # will still use 'default' profile
   dns:
     route53:
       ttl: 0

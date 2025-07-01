@@ -14,33 +14,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Module implements configuration object for aws installation"""
-from typing import List, Optional
+import configparser
 import logging
+
+from typing import Optional
+
 import boto3
 
 from .base import AbstractInstaller
 
 
-def _get_connection(*args):
-    return boto3.client('ec2', *args)
+def _get_connection(*args, **kwargs):
+    return boto3.client("ec2", *args, **kwargs)
 
 
 class AWSInstaller(AbstractInstaller):
     """Object containing all configuration related
     to aws installation"""
-    def __init__(self,
-                 cluster_region=None,
-                 list_of_regions=None,
-                 **kwargs):
+
+    def __init__(self, cluster_region=None, list_of_regions=None, credentials_file=None, **kwargs):
         super().__init__(**kwargs)
         self.cluster_region = cluster_region
         self.list_of_regions = list_of_regions if list_of_regions else []
+        self.credentials_file = credentials_file
+
+        self.boto_kwargs = {}
+
+        if self.credentials_file:
+            config = configparser.ConfigParser()
+            config.read(self.credentials_file)
+
+            self.boto_kwargs["aws_access_key_id"] = config["default"][
+                "aws_access_key_id"
+            ]
+            self.boto_kwargs["aws_secret_access_key"] = config["default"][
+                "aws_secret_access_key"
+            ]
 
     def get_template_name(self):
         return 'aws.jinja2'
 
     def acquire_resources(self):
-        region = get_free_region(self.list_of_regions)
+        region = self.get_free_region()
 
         if region is None:
             logging.error("No free region amongst selected ones: %s",
@@ -58,17 +73,16 @@ class AWSInstaller(AbstractInstaller):
     def post_installation(self):
         pass
 
-
-def get_free_region(order_list: List[str]) -> Optional[str]:
-    """Finds first free region in provided list,
-    if provided list is empty, it searches all regions"""
-    candidates = order_list[:]
-    if len(candidates) == 0:
-        candidates = [v['RegionName'] for v in _get_connection().describe_regions()['Regions']]
-    for candidate in candidates:
-        region = _get_connection(candidate)
-        count = len(region.describe_vpcs()['Vpcs'])
-        if count < 5:
-            logging.debug("Selected region %s", candidate)
-            return candidate
-    return None
+    def get_free_region(self) -> Optional[str]:
+        """Finds first free region in provided list,
+        if provided list is empty, it searches all regions"""
+        candidates = self.list_of_regions[:]
+        if len(candidates) == 0:
+            candidates = [v['RegionName'] for v in _get_connection(**self.boto_kwargs).describe_regions()['Regions']]
+        for candidate in candidates:
+            region = _get_connection(candidate, **self.boto_kwargs)
+            count = len(region.describe_vpcs()['Vpcs'])
+            if count < 5:
+                logging.debug("Selected region %s", candidate)
+                return candidate
+        return None
