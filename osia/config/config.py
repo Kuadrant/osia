@@ -8,7 +8,7 @@ import logging
 import warnings
 from typing import Dict, Optional
 
-from dynaconf import Dynaconf
+from dynaconf import Dynaconf  # type: ignore[import-untyped]
 
 ARCH_AMD = "amd64"
 ARCH_X86_64 = "x86_64"
