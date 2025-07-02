@@ -19,12 +19,13 @@ for specified installation platform"""
 from __future__ import annotations
 
 import logging
-
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from subprocess import run
 from typing import Protocol
+
 from jinja2 import Environment, PackageLoader
-from semantic_version import Version, SimpleSpec  # type: ignore[import-untyped]
+from semantic_version import (SimpleSpec,  # type: ignore[import-untyped]
+                              Version)
 
 
 class AbstractInstaller(ABC):

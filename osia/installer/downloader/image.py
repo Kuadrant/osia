@@ -1,17 +1,16 @@
 """Module implements logic for rhcos image download"""
+import gzip
+import json
+import logging
+import re
 import subprocess
-from subprocess import Popen, PIPE
-from shutil import copyfileobj
 from pathlib import Path
+from shutil import copyfileobj
+from subprocess import PIPE, Popen
 from tempfile import _TemporaryFileWrapper
 
-
-import gzip
-import re
-import logging
-import json
-
 import requests
+
 from .utils import get_data
 
 GITHUB_URL = "https://raw.githubusercontent.com/openshift/installer/{commit}/data/data/rhcos.json"

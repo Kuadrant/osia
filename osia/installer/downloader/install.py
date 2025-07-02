@@ -13,21 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Module responsible for download of openshift-install binary"""
-from shutil import copyfileobj
-from tempfile import _TemporaryFileWrapper
-from pathlib import Path
-import platform
-
 import logging
+import platform
 import re
 import stat
 import tarfile
 import time
+from pathlib import Path
+from shutil import copyfileobj
+from tempfile import _TemporaryFileWrapper
+
 import requests
-
 from bs4 import BeautifulSoup
-from .utils import get_data
 
+from .utils import get_data
 
 PROD_ROOT = "http://mirror.openshift.com/pub/openshift-v4/{}/clients/ocp/"
 BUILD_ROOT = "https://openshift-release-artifacts.svc.ci.openshift.org/"

@@ -1,8 +1,8 @@
 """Module implements utilitary functions shared by download
 package"""
 import logging
-from pathlib import Path
 from collections.abc import Callable
+from pathlib import Path
 from tempfile import NamedTemporaryFile, _TemporaryFileWrapper
 
 import requests

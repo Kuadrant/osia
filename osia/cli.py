@@ -17,13 +17,17 @@ openshift"""
 import argparse
 import logging
 from subprocess import Popen
-from semantic_version import Version, SimpleSpec  # type: ignore[import-untyped]
+
 import coloredlogs  # type: ignore[import-untyped]
 import distro
+from semantic_version import (SimpleSpec,  # type: ignore[import-untyped]
+                              Version)
 
-from .config.config import ARCH_AMD, ARCH_ARM, ARCH_X86_64, ARCH_AARCH64, ARCH_S390X, ARCH_PPC
-from .installer import install_cluster, delete_cluster, storage, download_installer
 from .config import read_config
+from .config.config import (ARCH_AARCH64, ARCH_AMD, ARCH_ARM, ARCH_PPC,
+                            ARCH_S390X, ARCH_X86_64)
+from .installer import (delete_cluster, download_installer, install_cluster,
+                        storage)
 
 
 def _identity(in_attr: str) -> str:

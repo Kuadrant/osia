@@ -13,21 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Module implements support for Openstack installation"""
-from operator import itemgetter
-from pathlib import Path
-from os import path
-
 import json
-import warnings
 import logging
+import warnings
+from operator import itemgetter
+from os import path
+from pathlib import Path
 
-from openstack.connection import from_config, Connection
+from openstack.connection import Connection, from_config
+from openstack.exceptions import SDKException
+from openstack.image.v2.image import Image
 from openstack.network.v2.floating_ip import FloatingIP
 from openstack.network.v2.port import Port
-from openstack.image.v2.image import Image
-from openstack.exceptions import SDKException
+
 from osia.installer.clouds.base import AbstractInstaller
-from osia.installer.downloader import get_url, download_image
+from osia.installer.downloader import download_image, get_url
 
 
 class ImageException(Exception):

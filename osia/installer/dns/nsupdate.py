@@ -14,9 +14,10 @@
 # limitations under the License.
 """Module implements methods specific for nsupate provider"""
 import logging
-from subprocess import Popen, PIPE
-from osia.installer.dns.base import DNSUtil
+from subprocess import PIPE, Popen
+
 from osia.installer.clouds.base import _AbstractInstaller
+from osia.installer.dns.base import DNSUtil
 
 
 class NSUpdate(DNSUtil):

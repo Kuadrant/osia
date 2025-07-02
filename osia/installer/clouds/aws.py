@@ -15,8 +15,6 @@
 """Module implements configuration object for aws installation"""
 import logging
 
-from typing import Optional
-
 import boto3
 from botocore.exceptions import ClientError
 
