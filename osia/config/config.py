@@ -6,7 +6,6 @@ import argparse
 import configparser
 import logging
 import warnings
-from typing import Dict, Optional
 
 from dynaconf import Dynaconf  # type: ignore[import-untyped]
 

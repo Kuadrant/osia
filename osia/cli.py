@@ -16,7 +16,6 @@
 openshift"""
 import argparse
 import logging
-from typing import List, Tuple, Optional
 from subprocess import Popen
 from semantic_version import Version, SimpleSpec  # type: ignore[import-untyped]
 import coloredlogs  # type: ignore[import-untyped]

@@ -15,7 +15,6 @@
 """Module implements support for Openstack installation"""
 from operator import itemgetter
 from pathlib import Path
-from typing import List, Optional, Tuple
 from os import path
 
 import json

@@ -3,7 +3,6 @@ import subprocess
 from subprocess import Popen, PIPE
 from shutil import copyfileobj
 from pathlib import Path
-from typing import Tuple
 from tempfile import _TemporaryFileWrapper
 
 

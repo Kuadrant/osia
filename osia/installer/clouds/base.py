@@ -22,7 +22,7 @@ import logging
 
 from abc import abstractmethod, ABC
 from subprocess import run
-from typing import Optional, Protocol
+from typing import Protocol
 from jinja2 import Environment, PackageLoader
 from semantic_version import Version, SimpleSpec  # type: ignore[import-untyped]
 

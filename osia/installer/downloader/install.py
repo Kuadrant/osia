@@ -16,7 +16,6 @@
 from shutil import copyfileobj
 from tempfile import _TemporaryFileWrapper
 from pathlib import Path
-from typing import Tuple, Optional
 import platform
 
 import logging
