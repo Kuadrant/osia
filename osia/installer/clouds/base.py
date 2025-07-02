@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -85,7 +84,7 @@ class AbstractInstaller(ABC):
         things like registration of apps domain and other is expected to happen."""
 
     @abstractmethod
-    def get_api_ip(self) -> Optional[str]:
+    def get_api_ip(self) -> str | None:
         """Returns api ip address if dns is supported, None otherwise.
         """
 
@@ -174,7 +173,7 @@ class _AbstractInstaller(Protocol):
         things like registration of apps domain and other is expected to happen."""
 
     @abstractmethod
-    def get_api_ip(self) -> Optional[str]:
+    def get_api_ip(self) -> str | None:
         """Returns api ip address if dns is supported, None otherwise.
         """
 

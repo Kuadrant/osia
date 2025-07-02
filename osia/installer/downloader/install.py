@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -40,7 +39,7 @@ VERSION_RE = re.compile(r"^openshift-install(-rhel(?P<rhel>\d+))?(-(?P<platform>
 EXTRACTION_RE = re.compile(r'.*Extracting tools for .*, may take up to a minute.*')
 
 
-def _current_platform() -> Tuple[str, str]:
+def _current_platform() -> tuple[str, str]:
     if platform.system() == "Linux" and platform.machine() == "x86_64":
         return "linux", "amd64"
     if platform.system() == "Linux" and (
@@ -55,7 +54,7 @@ def _current_platform() -> Tuple[str, str]:
 
 
 def get_url(directory: str, arch: str, fips: bool = False,
-            rhel_version: str | None = None) -> Tuple[str, Optional[str]]:
+            rhel_version: str | None = None) -> tuple[str, str | None]:
     """Searches the http directory and returns both url to installer
     and version.
     """
@@ -93,7 +92,7 @@ def get_url(directory: str, arch: str, fips: bool = False,
 
 
 def get_devel_url(version: str, arch: str, fips: bool = False,
-                  rhel_version: str | None = None) -> Tuple[str, Optional[str]]:
+                  rhel_version: str | None = None) -> tuple[str, str | None]:
     """
     Searches developement sources and returns url to installer
     """
@@ -110,13 +109,13 @@ def get_devel_url(version: str, arch: str, fips: bool = False,
 
 
 def get_prev_url(version: str, arch: str, fips: bool = False,
-                 rhel_version: str | None = None) -> Tuple[str, Optional[str]]:
+                 rhel_version: str | None = None) -> tuple[str, str | None]:
     """Returns installer url from dev-preview sources"""
     return get_url(PREVIEW_ROOT.format(arch) + version + "/", arch, fips, rhel_version)
 
 
 def get_prod_url(version: str, arch: str, fips: bool = False,
-                 rhel_version: str | None = None) -> Tuple[str, Optional[str]]:
+                 rhel_version: str | None = None) -> tuple[str, str | None]:
     """Returns installer url from production sources"""
     return get_url(PROD_ROOT.format(arch) + version + "/", arch, fips, rhel_version)
 
@@ -140,7 +139,7 @@ def _extract_tar(buffer: _TemporaryFileWrapper[bytes], target: str) -> Path:
             raise Exception("error")
         stream = tar.extractfile(inst_info)
         if stream is None:
-            raise IOError("could not extract tar")
+            raise OSError("could not extract tar")
         result = Path(target).joinpath(inst_info.name)
         with result.open('wb') as output:
             copyfileobj(stream, output)

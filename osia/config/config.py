@@ -25,7 +25,7 @@ settings = Dynaconf(
 )
 
 
-def _resolve_cloud_name(args: argparse.Namespace) -> Optional[Dict]:
+def _resolve_cloud_name(args: argparse.Namespace) -> dict | None:
     defaults = settings.as_dict()
 
     if defaults['CLOUD'][args.cloud].get('environments', None) is None:
@@ -46,7 +46,7 @@ def _resolve_cloud_name(args: argparse.Namespace) -> Optional[Dict]:
     return None
 
 
-def read_config(args: argparse.Namespace, default_args: Dict) -> Dict:
+def read_config(args: argparse.Namespace, default_args: dict) -> dict:
     """
     Reads config from Dynaconf and merges it with arguments provided via commandline.
     """

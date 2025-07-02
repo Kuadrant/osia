@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -41,7 +40,7 @@ class NSUpdate(DNSUtil):
         return 'nsupdate'
 
     def _get_start(self):
-        result = str()
+        result = ''
         if self.server:
             result += f"server {self.server}\n"
         if self.zone:

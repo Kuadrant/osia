@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -32,7 +31,7 @@ def _identity(in_attr: str) -> str:
     return in_attr
 
 
-def _read_list(in_str: str) -> List[str]:
+def _read_list(in_str: str) -> list[str]:
     return in_str.split(',')
 
 
@@ -89,7 +88,7 @@ for a in [v for _, x in ARGUMENTS.items() for u, v in x.items()]:
         a['proc'] = _identity
 
 
-def _check_fips_compatible(rhel_version: str | None) -> Tuple[bool, Optional[str]]:
+def _check_fips_compatible(rhel_version: str | None) -> tuple[bool, str | None]:
     if not rhel_version:
         return False, "FIPS installs are supported only from RHEL systems"
     try:

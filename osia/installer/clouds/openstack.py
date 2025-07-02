@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -95,14 +94,14 @@ def _find_best_fit(networks: dict) -> str:
 
 
 def _find_fit_network(osp_connection: Connection,
-                      networks: List[str]) -> Tuple[Optional[str], Optional[str]]:
+                      networks: list[str]) -> tuple[str | None, str | None]:
     named_networks = {k['name']: k for k in osp_connection.list_networks() if k['name'] in networks}
     results = {}
     for net_name in networks:
         net_avail = osp_connection.network.get_network_ip_availability(named_networks[net_name].id)
         subnet_usage = [(subnet['total_ips'], subnet['used_ips'])
                         for subnet in net_avail.subnet_ip_availability if subnet['ip_version'] == 4]
-        total_ips, used_ips = [sum(i) for i in zip(*subnet_usage)]
+        total_ips, used_ips = (sum(i) for i in zip(*subnet_usage))
         results[net_name] = total_ips / used_ips
     result = _find_best_fit(results)
     return named_networks[result]['id'], result
@@ -184,7 +183,7 @@ def resolve_image(osp_connection: Connection,
                   cluster_name: str,
                   images_dir: str,
                   installer: str,
-                  error: Optional[Exception]):
+                  error: Exception | None):
     """Function searches for image in openstack and creates it
     if it doesn't exist"""
     inst_url, version = get_url(installer)
@@ -294,7 +293,7 @@ class OpenstackInstaller(AbstractInstaller):
         _attach_fip_to_port(self.connection, apps_fip, ingress_port)
         self.apps_fip = apps_fip.floating_ip_address
 
-    def get_api_ip(self) -> Optional[str]:
+    def get_api_ip(self) -> str | None:
         return self.osp_fip
 
     def get_apps_ip(self):

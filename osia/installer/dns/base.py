@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -37,7 +36,7 @@ class DNSProvider:
         cls.instance().__add_provider(name, clazz)
 
     @classmethod
-    def instance(cls) -> "DNSProvider":
+    def instance(cls) -> DNSProvider:
         """Returns singleton instance"""
         if cls.__instance is None:
             cls.__instance = cls()

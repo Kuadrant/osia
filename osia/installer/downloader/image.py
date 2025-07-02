@@ -41,21 +41,21 @@ def _get_coreos_json(installer: str) -> tuple[str, str]:
     return json_part.get("disk", json_part)["location"], release_str
 
 
-def get_commit(installer: str) -> Tuple[str, str]:
+def get_commit(installer: str) -> tuple[str, str]:
     """Function extracts source commit from installer,
     in order to find associated rhcos image"""
     version_str = ""
     commit_regex = re.compile(r"^.*commit (?P<commit>\w*)$", re.MULTILINE)
     with Popen([installer, "version"], stdout=PIPE, universal_newlines=True) as proc:
         if proc.stdout is None:
-            raise IOError("Could not get installer version")
+            raise OSError("Could not get installer version")
         version_str = proc.stdout.read()
     commits = commit_regex.findall(version_str)
     logging.info("Found commits by running installer %s", commits)
     return commits[0]
 
 
-def _get_old_url(installer: str) -> Tuple[str, str]:
+def _get_old_url(installer: str) -> tuple[str, str]:
     commit = get_commit(installer)
     gh_data_link = GITHUB_URL.format(commit=commit)
     rhcos_json = requests.get(gh_data_link, allow_redirects=True)
@@ -63,7 +63,7 @@ def _get_old_url(installer: str) -> Tuple[str, str]:
     return rhcos_data['baseURI'] + rhcos_data['images']['openstack']['path'], rhcos_data['buildid']
 
 
-def get_url(installer: str) -> Tuple[str, str]:
+def get_url(installer: str) -> tuple[str, str]:
     """Function builds url to rhcos image and version of
     rhcos iamge."""
     url, version = None, None

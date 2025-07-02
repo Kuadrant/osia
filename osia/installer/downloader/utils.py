@@ -2,7 +2,7 @@
 package"""
 import logging
 from pathlib import Path
-from typing import Callable
+from collections.abc import Callable
 from tempfile import NamedTemporaryFile, _TemporaryFileWrapper
 
 import requests
