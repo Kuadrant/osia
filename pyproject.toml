@@ -59,5 +59,4 @@ build-backend = "poetry.core.masonry.api"
 exclude = [
         'osia/cli.py',
         'osia/config/config.py',
-        'osia/installer/downloader/install.py',
 ]
