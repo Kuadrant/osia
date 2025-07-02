@@ -89,7 +89,7 @@ for a in [v for _, x in ARGUMENTS.items() for u, v in x.items()]:
         a['proc'] = _identity
 
 
-def _check_fips_compatible(rhel_version: bool) -> Tuple[bool, Optional[str]]:
+def _check_fips_compatible(rhel_version: str | None) -> Tuple[bool, Optional[str]]:
     if not rhel_version:
         return False, "FIPS installs are supported only from RHEL systems"
     try:

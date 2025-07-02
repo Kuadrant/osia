@@ -17,7 +17,7 @@
 import logging
 from subprocess import Popen, PIPE
 from osia.installer.dns.base import DNSUtil
-from osia.installer.clouds.base import AbstractInstaller
+from osia.installer.clouds.base import _AbstractInstaller
 
 
 class NSUpdate(DNSUtil):
@@ -51,7 +51,7 @@ class NSUpdate(DNSUtil):
     def _get_suffix(self):
         return f"{self.cluster_name}.{self.base_domain}"
 
-    def add_api_domain(self, instance: AbstractInstaller):
+    def add_api_domain(self, instance: _AbstractInstaller):
         if instance.get_api_ip() is None:
             logging.debug("Not applying dns settings since no ip address is associated")
             return
@@ -63,7 +63,7 @@ send
 """
         self._exec_nsupdate(nsupdate_string)
 
-    def add_apps_domain(self, instance: AbstractInstaller):
+    def add_apps_domain(self, instance: _AbstractInstaller):
         if instance.get_apps_ip() is None:
             logging.debug("Not applying dns settings since no ip address is associated")
             return

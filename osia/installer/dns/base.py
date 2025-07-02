@@ -22,13 +22,13 @@ from os import path
 from pathlib import Path
 from typing import Protocol
 
-from osia.installer.clouds.base import AbstractInstaller
+from osia.installer.clouds.base import _AbstractInstaller
 
 
 class DNSProvider:
     """Class implements dynamic provier of DNSUtil base class"""
 
-    __instance = None
+    __instance: DNSProvider | None = None
 
     # pylint: disable=protected-access
     @classmethod
@@ -67,11 +67,11 @@ class _DNSUtil(Protocol):
     """Protocol for DNSUtils"""
 
     @abstractmethod
-    def add_api_domain(self, instance: AbstractInstaller):
+    def add_api_domain(self, instance: _AbstractInstaller):
         """Method registers api domain in selected provider"""
 
     @abstractmethod
-    def add_apps_domain(self, instance: AbstractInstaller):
+    def add_apps_domain(self, instance: _AbstractInstaller):
         """Method registers apps domain in selected provider"""
 
     @abstractmethod
@@ -102,11 +102,11 @@ class DNSUtil(ABC):
         self.modified = False
 
     @abstractmethod
-    def add_api_domain(self, instance: AbstractInstaller):
+    def add_api_domain(self, instance: _AbstractInstaller):
         """Method registers api domain in selected provider"""
 
     @abstractmethod
-    def add_apps_domain(self, instance: AbstractInstaller):
+    def add_apps_domain(self, instance: _AbstractInstaller):
         """Method registers apps domain in selected provider"""
 
     @abstractmethod

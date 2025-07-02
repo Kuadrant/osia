@@ -79,6 +79,7 @@ def install_cluster(cloud_provider,
     inst.post_installation()
 
     if dns_settings is not None:
+        assert dns_prov
         dns_prov.add_apps_domain(inst)
         dns_prov.marshall(cluster_name)
 

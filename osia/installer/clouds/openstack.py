@@ -57,7 +57,7 @@ def _update_json(json_file: str, fip: str):
         json.dump(res, out)
 
 
-def delete_fips(fips_file: str):
+def delete_fips(fips_file: Path):
     """Deletes floating ips stored in configuration file"""
     fips = None
     with open(fips_file) as fi_file:
@@ -283,6 +283,8 @@ class OpenstackInstaller(AbstractInstaller):
                                         "api").floating_ip_address
 
     def post_installation(self):
+        assert self.connection
+        assert self.network
         ingress_port = _find_cluster_ports(self.connection, self.cluster_name)
         apps_fip = _get_floating_ip(self.connection,
                                     self.osp_cloud,
