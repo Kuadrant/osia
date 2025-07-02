@@ -4,7 +4,7 @@ from subprocess import Popen, PIPE
 from shutil import copyfileobj
 from pathlib import Path
 from typing import Tuple
-from tempfile import NamedTemporaryFile
+from tempfile import _TemporaryFileWrapper
 
 
 import gzip
@@ -25,13 +25,15 @@ class CoreOsException(Exception):
         super().__init__(self, *args, *kwargs)
 
 
-def _get_coreos_json(installer: str) -> str:
+def _get_coreos_json(installer: str) -> tuple[str, str]:
     json_data = {}
     with Popen([installer, "coreos", "print-stream-json"], stdout=PIPE,
                stderr=subprocess.DEVNULL, universal_newlines=True) as proc:
         proc.wait()
         if proc.returncode != 0:
             raise CoreOsException("Installer doesn't support coreos subcommand")
+        if proc.stdout is None:
+            raise CoreOsException("Installer didn't output any data")
         json_data = json.loads(proc.stdout.read())
     json_part = json_data["architectures"]["x86_64"]["artifacts"]["openstack"]
     release_str = json_part["release"]
@@ -45,6 +47,8 @@ def get_commit(installer: str) -> Tuple[str, str]:
     version_str = ""
     commit_regex = re.compile(r"^.*commit (?P<commit>\w*)$", re.MULTILINE)
     with Popen([installer, "version"], stdout=PIPE, universal_newlines=True) as proc:
+        if proc.stdout is None:
+            raise IOError("Could not get installer version")
         version_str = proc.stdout.read()
     commits = commit_regex.findall(version_str)
     logging.info("Found commits by running installer %s", commits)
@@ -71,7 +75,7 @@ def get_url(installer: str) -> Tuple[str, str]:
     return url, version
 
 
-def _extract_gzip(buff: NamedTemporaryFile, target: str) -> Path:
+def _extract_gzip(buff: _TemporaryFileWrapper[bytes], target: str) -> Path:
     result = None
     with gzip.open(buff.name) as zip_file:
         result = Path(target)
