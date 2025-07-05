@@ -19,6 +19,7 @@ import logging
 from typing import Optional
 
 import boto3
+from botocore.exceptions import ClientError
 
 from .base import AbstractInstaller
 
@@ -69,11 +70,15 @@ class AWSInstaller(AbstractInstaller):
         if provided list is empty, it searches all regions"""
         candidates = self.list_of_regions[:]
         if len(candidates) == 0:
-            candidates = [v['RegionName'] for v in _get_connection(**self.boto_kwargs).describe_regions()['Regions']]
+            candidates = boto3.Session().get_available_regions('ec2')
         for candidate in candidates:
             region = _get_connection(candidate, **self.boto_kwargs)
-            count = len(region.describe_vpcs()['Vpcs'])
-            if count < 5:
-                logging.debug("Selected region %s", candidate)
-                return candidate
+            try:
+                count = len(region.describe_vpcs()['Vpcs'])
+                if count < 5:
+                    logging.debug("Selected region %s", candidate)
+                    return candidate
+            except ClientError:
+                logging.debug("Skipping %s region, it might not be enalbed", candidate)
+                continue
         return None
