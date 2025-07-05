@@ -42,7 +42,8 @@ ARGUMENTS = {
                   'choices': ['openstack', 'aws']},
         'cloud_env': {'help': 'Environment of cloud to be used.', 'type': str},
         'dns_provider': {'help': 'Provider of dns used with openstack cloud',
-                         'type': str, 'choices': ['nsupdate', 'route53']}
+                         'type': str, 'choices': ['nsupdate', 'route53']},
+        'credentials_file': {'help': 'AWS config file for ec2, using "default" profile'},
     },
     'install': {
         'os_image': {'help': 'Image to override', 'type': str},
@@ -75,10 +76,11 @@ ARGUMENTS = {
     'dns': {
         'dns_ttl': {'help': 'TTL of the records', 'type': int},
         'dns_key_file': {'help': 'Keyfile used to access dns server via nsupdate'},
+        'dns_credentials_file': {'help': 'AWS config file for route53, using "default" profile'},
         'dns_zone': {'help': 'Zone on server where the record will be stored'},
         'dns_server': {'help': 'Address of server with running bind'},
         'dns_use_ipv4': {'help': 'Use only IPv4 for DNS settings', 'action': 'store_const',
-                         'const': True}
+                         'const': True},
     }
 }
 
