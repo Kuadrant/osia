@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -20,6 +19,7 @@ Module is responsible for maintenance of the git repository
 and to store the generated artifacts by the `openshift-install
 binary."""
 import logging
+
 from git import Repo
 
 

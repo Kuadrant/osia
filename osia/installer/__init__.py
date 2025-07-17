@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -17,8 +16,9 @@
 required to full installation of cluster"""
 from .clouds import InstallerProvider
 from .dns import DNSProvider
-from .executor import install_cluster, delete_cluster
 from .downloader import download_installer
+from .executor import delete_cluster, install_cluster
+
 __all__ = ['InstallerProvider',
            'DNSProvider',
            'install_cluster',

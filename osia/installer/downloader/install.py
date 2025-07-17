@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -14,22 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Module responsible for download of openshift-install binary"""
-from shutil import copyfileobj
-from tempfile import NamedTemporaryFile
-from pathlib import Path
-from typing import Tuple, Optional
-import platform
-
 import logging
+import platform
 import re
 import stat
 import tarfile
 import time
+from pathlib import Path
+from shutil import copyfileobj
+from tempfile import _TemporaryFileWrapper
+
 import requests
-
 from bs4 import BeautifulSoup
-from .utils import get_data
 
+from .utils import get_data
 
 PROD_ROOT = "http://mirror.openshift.com/pub/openshift-v4/{}/clients/ocp/"
 BUILD_ROOT = "https://openshift-release-artifacts.svc.ci.openshift.org/"
@@ -40,7 +37,7 @@ VERSION_RE = re.compile(r"^openshift-install(-rhel(?P<rhel>\d+))?(-(?P<platform>
 EXTRACTION_RE = re.compile(r'.*Extracting tools for .*, may take up to a minute.*')
 
 
-def _current_platform() -> Tuple[str, str]:
+def _current_platform() -> tuple[str, str]:
     if platform.system() == "Linux" and platform.machine() == "x86_64":
         return "linux", "amd64"
     if platform.system() == "Linux" and (
@@ -55,7 +52,7 @@ def _current_platform() -> Tuple[str, str]:
 
 
 def get_url(directory: str, arch: str, fips: bool = False,
-            rhel_version: str = None) -> Tuple[Optional[str], Optional[str]]:
+            rhel_version: str | None = None) -> tuple[str, str | None]:
     """Searches the http directory and returns both url to installer
     and version.
     """
@@ -93,7 +90,7 @@ def get_url(directory: str, arch: str, fips: bool = False,
 
 
 def get_devel_url(version: str, arch: str, fips: bool = False,
-                  rhel_version: str = None) -> Tuple[Optional[str], Optional[str]]:
+                  rhel_version: str | None = None) -> tuple[str, str | None]:
     """
     Searches developement sources and returns url to installer
     """
@@ -110,13 +107,13 @@ def get_devel_url(version: str, arch: str, fips: bool = False,
 
 
 def get_prev_url(version: str, arch: str, fips: bool = False,
-                 rhel_version: str = None) -> Tuple[Optional[str], Optional[str]]:
+                 rhel_version: str | None = None) -> tuple[str, str | None]:
     """Returns installer url from dev-preview sources"""
     return get_url(PREVIEW_ROOT.format(arch) + version + "/", arch, fips, rhel_version)
 
 
 def get_prod_url(version: str, arch: str, fips: bool = False,
-                 rhel_version: str = None) -> Tuple[Optional[str], Optional[str]]:
+                 rhel_version: str | None = None) -> tuple[str, str | None]:
     """Returns installer url from production sources"""
     return get_url(PROD_ROOT.format(arch) + version + "/", arch, fips, rhel_version)
 
@@ -129,7 +126,7 @@ def _get_storage_path(version: str, install_base: str) -> str:
     return spec_path.as_posix()
 
 
-def _extract_tar(buffer: NamedTemporaryFile, target: str) -> Path:
+def _extract_tar(buffer: _TemporaryFileWrapper[bytes], target: str) -> Path:
     result = None
     with tarfile.open(buffer.name) as tar:
         inst_info = None
@@ -139,6 +136,8 @@ def _extract_tar(buffer: NamedTemporaryFile, target: str) -> Path:
         if inst_info is None:
             raise Exception("error")
         stream = tar.extractfile(inst_info)
+        if stream is None:
+            raise OSError("could not extract tar")
         result = Path(target).joinpath(inst_info.name)
         with result.open('wb') as output:
             copyfileobj(stream, output)
@@ -146,7 +145,7 @@ def _extract_tar(buffer: NamedTemporaryFile, target: str) -> Path:
     return result
 
 
-def get_installer(tar_url: str, target: str):
+def get_installer(tar_url: str, target: str) -> str:
     """Download and extract the installer into the target"""
     return get_data(tar_url, target, _extract_tar)
 
@@ -157,7 +156,7 @@ def download_installer(installer_version: str,
                        dest_directory: str,
                        source: str,
                        fips: bool = False,
-                       rhel_version: str = None) -> str:
+                       rhel_version: str | None = None) -> str:
     """Starts search and extraction of installer"""
     logging.debug("Getting version %s of %s, storing to directory %s and devel is %r",
                   installer_version, installer_arch, dest_directory, source)
@@ -174,7 +173,9 @@ def download_installer(installer_version: str,
 
     url, version = downloader(installer_version, installer_arch, fips, rhel_version)
     logging.debug('Installer\'s URL is  %s and full version is %s', url, version)
-    root = Path(dest_directory).joinpath(version)
+    root = Path(dest_directory)
+    if version:
+        root = root.joinpath(version)
 
     installer_exe_name = 'openshift-install'
 

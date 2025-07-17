@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -14,22 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Module implements support for Openstack installation"""
-from operator import itemgetter
-from pathlib import Path
-from typing import List, Optional, Tuple
-from os import path
-
 import json
-import warnings
 import logging
+import warnings
+from operator import itemgetter
+from os import path
+from pathlib import Path
 
-from openstack.connection import from_config, Connection
+from openstack.connection import Connection, from_config
+from openstack.exceptions import SDKException
+from openstack.image.v2.image import Image
 from openstack.network.v2.floating_ip import FloatingIP
 from openstack.network.v2.port import Port
-from openstack.image.v2.image import Image
-from openstack.exceptions import SDKException
+
 from osia.installer.clouds.base import AbstractInstaller
-from osia.installer.downloader import get_url, download_image
+from osia.installer.downloader import download_image, get_url
 
 
 class ImageException(Exception):
@@ -57,7 +55,7 @@ def _update_json(json_file: str, fip: str):
         json.dump(res, out)
 
 
-def delete_fips(fips_file: str):
+def delete_fips(fips_file: Path):
     """Deletes floating ips stored in configuration file"""
     fips = None
     with open(fips_file) as fi_file:
@@ -95,14 +93,14 @@ def _find_best_fit(networks: dict) -> str:
 
 
 def _find_fit_network(osp_connection: Connection,
-                      networks: List[str]) -> Tuple[Optional[str], Optional[str]]:
+                      networks: list[str]) -> tuple[str | None, str | None]:
     named_networks = {k['name']: k for k in osp_connection.list_networks() if k['name'] in networks}
     results = {}
     for net_name in networks:
         net_avail = osp_connection.network.get_network_ip_availability(named_networks[net_name].id)
         subnet_usage = [(subnet['total_ips'], subnet['used_ips'])
                         for subnet in net_avail.subnet_ip_availability if subnet['ip_version'] == 4]
-        total_ips, used_ips = [sum(i) for i in zip(*subnet_usage)]
+        total_ips, used_ips = (sum(i) for i in zip(*subnet_usage))
         results[net_name] = total_ips / used_ips
     result = _find_best_fit(results)
     return named_networks[result]['id'], result
@@ -184,7 +182,7 @@ def resolve_image(osp_connection: Connection,
                   cluster_name: str,
                   images_dir: str,
                   installer: str,
-                  error: Optional[Exception]):
+                  error: Exception | None):
     """Function searches for image in openstack and creates it
     if it doesn't exist"""
     inst_url, version = get_url(installer)
@@ -283,6 +281,8 @@ class OpenstackInstaller(AbstractInstaller):
                                         "api").floating_ip_address
 
     def post_installation(self):
+        assert self.connection
+        assert self.network
         ingress_port = _find_cluster_ports(self.connection, self.cluster_name)
         apps_fip = _get_floating_ip(self.connection,
                                     self.osp_cloud,
@@ -292,7 +292,7 @@ class OpenstackInstaller(AbstractInstaller):
         _attach_fip_to_port(self.connection, apps_fip, ingress_port)
         self.apps_fip = apps_fip.floating_ip_address
 
-    def get_api_ip(self) -> Optional[str]:
+    def get_api_ip(self) -> str | None:
         return self.osp_fip
 
     def get_apps_ip(self):

@@ -17,7 +17,7 @@ clean:
 	poetry env remove --all
 	rm -rf .mk_poetry* dist
 
-check: setup_poetry flake8 pylint
+check: setup_poetry flake8 pylint mypy
 
 pylint flake8 mypy: setup_poetry
 	poetry run $@ osia

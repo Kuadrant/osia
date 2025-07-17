@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -18,7 +17,7 @@ import logging
 
 import boto3
 
-from osia.installer.clouds.base import AbstractInstaller
+from osia.installer.clouds.base import _AbstractInstaller
 from osia.installer.dns.base import DNSUtil
 
 
@@ -78,11 +77,11 @@ class Route53Provider(DNSUtil):
             logging.debug(ex)
         self.modified = True
 
-    def add_api_domain(self, instance: AbstractInstaller):
+    def add_api_domain(self, instance: _AbstractInstaller):
         self.api_ip = instance.get_api_ip()
         self._execute_command('api', 'CREATE', self.api_ip)
 
-    def add_apps_domain(self, instance: AbstractInstaller):
+    def add_apps_domain(self, instance: _AbstractInstaller):
         self.apps_ip = instance.get_apps_ip()
         self._execute_command('*.apps', 'CREATE', self.apps_ip)
 

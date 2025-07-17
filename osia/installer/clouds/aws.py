@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -15,8 +14,6 @@
 # limitations under the License.
 """Module implements configuration object for aws installation"""
 import logging
-
-from typing import Optional
 
 import boto3
 from botocore.exceptions import ClientError
@@ -56,7 +53,7 @@ class AWSInstaller(AbstractInstaller):
         logging.info("Selected region %s", region)
         self.cluster_region = region
 
-    def get_api_ip(self) -> Optional[str]:
+    def get_api_ip(self) -> str | None:
         return None
 
     def get_apps_ip(self):
@@ -65,7 +62,7 @@ class AWSInstaller(AbstractInstaller):
     def post_installation(self):
         pass
 
-    def get_free_region(self) -> Optional[str]:
+    def get_free_region(self) -> str | None:
         """Finds first free region in provided list,
         if provided list is empty, it searches all regions"""
         candidates = self.list_of_regions[:]

@@ -6,9 +6,8 @@ import argparse
 import configparser
 import logging
 import warnings
-from typing import Dict, Optional
 
-from dynaconf import Dynaconf
+from dynaconf import Dynaconf  # type: ignore[import-untyped]
 
 ARCH_AMD = "amd64"
 ARCH_X86_64 = "x86_64"
@@ -25,7 +24,7 @@ settings = Dynaconf(
 )
 
 
-def _resolve_cloud_name(args: argparse.Namespace) -> Optional[Dict]:
+def _resolve_cloud_name(args: argparse.Namespace) -> dict | None:
     defaults = settings.as_dict()
 
     if defaults['CLOUD'][args.cloud].get('environments', None) is None:
@@ -46,7 +45,7 @@ def _resolve_cloud_name(args: argparse.Namespace) -> Optional[Dict]:
     return None
 
 
-def read_config(args: argparse.Namespace, default_args: Dict) -> Dict:
+def read_config(args: argparse.Namespace, default_args: dict) -> dict:
     """
     Reads config from Dynaconf and merges it with arguments provided via commandline.
     """

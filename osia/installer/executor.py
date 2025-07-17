@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -14,10 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Executor module implements controlling logic of cluster installation"""
-from os import environ
-from subprocess import Popen
-from pathlib import Path
 import logging
+from os import environ
+from pathlib import Path
+from subprocess import Popen
 
 from .clouds import InstallerProvider
 from .clouds.openstack import delete_fips, delete_image
@@ -79,6 +78,7 @@ def install_cluster(cloud_provider,
     inst.post_installation()
 
     if dns_settings is not None:
+        assert dns_prov
         dns_prov.add_apps_domain(inst)
         dns_prov.marshall(cluster_name)
 

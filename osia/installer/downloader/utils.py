@@ -1,16 +1,16 @@
 """Module implements utilitary functions shared by download
 package"""
 import logging
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
-from tempfile import NamedTemporaryFile
+from tempfile import NamedTemporaryFile, _TemporaryFileWrapper
 
 import requests
 
 
 def get_data(tar_url: str,
              target: str,
-             processor: Callable[[NamedTemporaryFile, str], Path]) -> str:
+             processor: Callable[[_TemporaryFileWrapper[bytes], str], Path]) -> str:
     """Function downloads file via http and runs it through
     processor function for extraction"""
     result = None

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -14,10 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Module implements configuration objects for install-config creation"""
-from .base import InstallerProvider
 from .aws import AWSInstaller
+from .base import InstallerProvider
 from .openstack import OpenstackInstaller
-
 
 InstallerProvider.register('aws', AWSInstaller)
 InstallerProvider.register('openstack', OpenstackInstaller)

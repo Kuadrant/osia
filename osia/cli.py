@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Osia authors
 #
@@ -17,26 +16,29 @@
 openshift"""
 import argparse
 import logging
-from typing import List, Tuple, Optional
 from subprocess import Popen
-from semantic_version import Version, SimpleSpec
-import coloredlogs
-import distro
 
-from .config.config import ARCH_AMD, ARCH_ARM, ARCH_X86_64, ARCH_AARCH64, ARCH_S390X, ARCH_PPC
-from .installer import install_cluster, delete_cluster, storage, download_installer
+import coloredlogs  # type: ignore[import-untyped]
+import distro
+from semantic_version import (SimpleSpec,  # type: ignore[import-untyped]
+                              Version)
+
 from .config import read_config
+from .config.config import (ARCH_AARCH64, ARCH_AMD, ARCH_ARM, ARCH_PPC,
+                            ARCH_S390X, ARCH_X86_64)
+from .installer import (delete_cluster, download_installer, install_cluster,
+                        storage)
 
 
 def _identity(in_attr: str) -> str:
     return in_attr
 
 
-def _read_list(in_str: str) -> List[str]:
+def _read_list(in_str: str) -> list[str]:
     return in_str.split(',')
 
 
-ARGUMENTS = {
+ARGUMENTS: dict = {
     'common': {
         'cloud': {'help': 'Cloud provider to be used.', 'type': str,
                   'choices': ['openstack', 'aws']},
@@ -89,7 +91,7 @@ for a in [v for _, x in ARGUMENTS.items() for u, v in x.items()]:
         a['proc'] = _identity
 
 
-def _check_fips_compatible(rhel_version: bool) -> Tuple[bool, Optional[str]]:
+def _check_fips_compatible(rhel_version: str | None) -> tuple[bool, str | None]:
     if not rhel_version:
         return False, "FIPS installs are supported only from RHEL systems"
     try:
@@ -179,34 +181,34 @@ def _get_helper(parser: argparse.ArgumentParser):
     return printer
 
 
-def _create_commons():
+def _create_commons() -> argparse.ArgumentParser:
     commons = argparse.ArgumentParser(add_help=False)
-    common_arguments = [
-        [['--cluster-name'], dict(required=True, help='Name of the cluster')],
-        [['--installer'], dict(required=False,
-                               help='Executable binary of openshift install cli', default=None)],
-        [['--installer-version'], dict(help='Version of downloader to be downloaded',
-                                       default='latest', type=str)],
-        [['--installer-arch'], dict(help='Architecture of downloader to be downloaded',
+    common_arguments: list[tuple[list[str], dict]] = [
+        (['--cluster-name'], dict(required=True, help='Name of the cluster')),
+        (['--installer'], dict(required=False,
+                               help='Executable binary of openshift install cli', default=None)),
+        (['--installer-version'], dict(help='Version of downloader to be downloaded',
+                                       default='latest', type=str)),
+        (['--installer-arch'], dict(help='Architecture of downloader to be downloaded',
                                     choices=[ARCH_AMD, ARCH_X86_64, ARCH_ARM,
                                              ARCH_AARCH64, ARCH_PPC, ARCH_S390X],
-                                    default=ARCH_AMD, type=str)],
-        [['--installer-source'], dict(type=str,
+                                    default=ARCH_AMD, type=str)),
+        (['--installer-source'], dict(type=str,
                                       help='Set the source to search for installer',
                                       choices=["prod", "devel", "prev"],
-                                      default='prod')],
-        [['--installers-dir'], dict(help='Folder where installers are stored',
-                                    required=False, default='installers')],
-        [['--skip-git'], dict(help='When set, the persistance will be skipped',
-                              action='store_true')],
-        [['-v', '--verbose'], dict(help='Increase verbosity level', action='store_true')]
+                                      default='prod')),
+        (['--installers-dir'], dict(help='Folder where installers are stored',
+                                    required=False, default='installers')),
+        (['--skip-git'], dict(help='When set, the persistance will be skipped',
+                              action='store_true')),
+        (['-v', '--verbose'], dict(help='Increase verbosity level', action='store_true')),
     ]
-    for k in common_arguments:
-        commons.add_argument(*k[0], **k[1])
+    for args, kwargs in common_arguments:
+        commons.add_argument(*args, **kwargs)
     return commons
 
 
-def _setup_parser():
+def _setup_parser() -> argparse.ArgumentParser:
     commons = _create_commons()
 
     parser = argparse.ArgumentParser("osia")
@@ -225,7 +227,7 @@ def _setup_parser():
     return parser
 
 
-def main_cli():
+def main_cli() -> None:
     """Function represents main entrypoint for the
     osia installer
 
