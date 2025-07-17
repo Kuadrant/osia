@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "osia"
-version = "0.2.0-alpha13"
+version = "0.2.0-alpha14"
 description = "OpenShift infra automation"
 authors = ["Miroslav Jaros <mirek@mijaros.cz>"]
 maintainers = ["Matej Dujava <mdujava@redhat.com>"]
