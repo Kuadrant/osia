@@ -1,5 +1,7 @@
 """Module implements utilitary functions shared by download
 package"""
+from __future__ import annotations
+
 import logging
 from collections.abc import Callable
 from pathlib import Path
