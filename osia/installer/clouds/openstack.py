@@ -97,11 +97,16 @@ def _find_fit_network(osp_connection: Connection,
     named_networks = {k['name']: k for k in osp_connection.list_networks() if k['name'] in networks}
     results = {}
     for net_name in networks:
+        if not named_networks[net_name].is_admin_state_up:
+            continue
         net_avail = osp_connection.network.get_network_ip_availability(named_networks[net_name].id)
         subnet_usage = [(subnet['total_ips'], subnet['used_ips'])
                         for subnet in net_avail.subnet_ip_availability if subnet['ip_version'] == 4]
         total_ips, used_ips = (sum(i) for i in zip(*subnet_usage))
         results[net_name] = total_ips / used_ips
+
+    assert len(results) > 0, "No suitable network"
+
     result = _find_best_fit(results)
     return named_networks[result]['id'], result
 
