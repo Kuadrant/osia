@@ -1,4 +1,6 @@
 """Module implements logic for rhcos image download"""
+from __future__ import annotations
+
 import gzip
 import json
 import logging
