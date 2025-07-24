@@ -184,24 +184,18 @@ def _get_helper(parser: argparse.ArgumentParser):
 def _create_commons() -> argparse.ArgumentParser:
     commons = argparse.ArgumentParser(add_help=False)
     common_arguments: list[tuple[list[str], dict]] = [
-        (['--cluster-name'], dict(required=True, help='Name of the cluster')),
-        (['--installer'], dict(required=False,
-                               help='Executable binary of openshift install cli', default=None)),
-        (['--installer-version'], dict(help='Version of downloader to be downloaded',
-                                       default='latest', type=str)),
-        (['--installer-arch'], dict(help='Architecture of downloader to be downloaded',
-                                    choices=[ARCH_AMD, ARCH_X86_64, ARCH_ARM,
-                                             ARCH_AARCH64, ARCH_PPC, ARCH_S390X],
-                                    default=ARCH_AMD, type=str)),
-        (['--installer-source'], dict(type=str,
-                                      help='Set the source to search for installer',
-                                      choices=["prod", "devel", "prev"],
-                                      default='prod')),
-        (['--installers-dir'], dict(help='Folder where installers are stored',
-                                    required=False, default='installers')),
-        (['--skip-git'], dict(help='When set, the persistance will be skipped',
-                              action='store_true')),
-        (['-v', '--verbose'], dict(help='Increase verbosity level', action='store_true')),
+        (['--cluster-name'], {"required": True, "help": "Name of the cluster"}),
+        (['--installer'], {"required": False, "help": 'Executable binary of openshift install cli', "default": None}),
+        (['--installer-version'], {"help": 'Version of downloader to be downloaded', "default": 'latest', "type": str}),
+        (['--installer-arch'], {"help": 'Architecture of downloader to be downloaded',
+                                "choices": [ARCH_AMD, ARCH_X86_64, ARCH_ARM, ARCH_AARCH64, ARCH_PPC, ARCH_S390X],
+                                "default": ARCH_AMD, "type": str}),
+        (['--installer-source'], {"type": str, "help": 'Set the source to search for installer',
+                                  "choices": ["prod", "devel", "prev"], "default": 'prod'}),
+        (['--installers-dir'], {"help": 'Folder where installers are stored', "required": False,
+                                "default": 'installers'}),
+        (['--skip-git'], {"help": 'When set, the persistance will be skipped', "action": 'store_true'}),
+        (['-v', '--verbose'], {"help": 'Increase verbosity level', "action": 'store_true'}),
     ]
     for args, kwargs in common_arguments:
         commons.add_argument(*args, **kwargs)
@@ -235,7 +229,7 @@ def main_cli() -> None:
     parser = _setup_parser()
     args = parser.parse_args()
 
-    coloredlogs.DEFAULT_FIELD_STYLES.update(filename=dict(color='blue'))
+    coloredlogs.DEFAULT_FIELD_STYLES.update(filename={"color": 'blue'})
     fmt: str = "%(asctime)s %(filename)12s:%(lineno)-5i %(levelname)-8s %(message)s"
 
     if vars(args).get('verbose', False):

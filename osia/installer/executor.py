@@ -55,11 +55,16 @@ def install_cluster(cloud_provider,
                       cluster_path.as_posix())
         return
     cluster_path.mkdir()
-    inst = InstallerProvider.instance()[cloud_provider](cluster_name=cluster_name, **configuration)
+    inst = InstallerProvider.instance()[cloud_provider](  # pylint: disable=unsubscriptable-object
+        cluster_name=cluster_name,
+        **configuration
+    )
     inst.acquire_resources()
     dns_prov = None
     if dns_settings is not None:
-        dns_prov = DNSProvider.instance()[dns_settings['provider']](**dns_settings['conf'])
+        dns_prov = DNSProvider.instance()[dns_settings['provider']](  # pylint: disable=unsubscriptable-object
+            **dns_settings['conf']
+        )
         dns_prov.add_api_domain(inst)
         dns_prov.marshall(cluster_name)
 

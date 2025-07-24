@@ -20,10 +20,13 @@ clean:
 check: setup_poetry flake8 pylint mypy
 
 pylint flake8 mypy: setup_poetry
-	poetry run $@ osia
+	poetry run $@ osia tests
 
 black-check: setup_poetry
 	poetry run black --check osia
+
+tests: setup_poetry
+	poetry run pytest ${flags} -n 4 -v tests
 
 dist: setup_poetry
 	poetry build
@@ -31,4 +34,4 @@ dist: setup_poetry
 release: dist
 	poetry publish
 
-.PHONY: update clean all check
+.PHONY: update clean all check black-check pylint flake8 mypy tests

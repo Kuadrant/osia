@@ -50,6 +50,11 @@ types-PyYAML = "*"
 types-beautifulsoup4 = "*"
 types-html5lib = "*"
 types-requests = "*"
+pytest = "^8.4.1"
+pytest-cov = "^6.2.1"
+pytest-xdist = "^3.8.0"
+black = "^25.1.0"
+isort = "^6.0.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -58,3 +63,6 @@ build-backend = "poetry.core.masonry.api"
 [tool.mypy]
 check_untyped_defs = true
 local_partial_types = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=osia --cov-branch --cov-report term-missing"
