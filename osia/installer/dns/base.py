@@ -94,7 +94,7 @@ class _DNSUtil(Protocol):
 class DNSUtil(ABC):
     """Class implements basic settings for"""
 
-    def __init__(self, cluster_name=None, base_domain=None, ttl=None):
+    def __init__(self, cluster_name=None, base_domain=None, ttl=None, **unused_kwargs):
         self.cluster_name = cluster_name
         self.base_domain = base_domain
         self.ttl = ttl
