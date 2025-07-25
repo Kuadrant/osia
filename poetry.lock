@@ -83,18 +83,18 @@ lxml = ["lxml"]
 
 [[package]]
 name = "boto3"
-version = "1.39.7"
+version = "1.39.13"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "boto3-1.39.7-py3-none-any.whl", hash = "sha256:c8c0e11fff7bb85f903b860b6bfd4f509a4d749decf38bb6a409ffe5d6eb0c91"},
-    {file = "boto3-1.39.7.tar.gz", hash = "sha256:28daeb005e3381808e0e12995056ee8951056ddd43506c07482a15b40ae785b0"},
+    {file = "boto3-1.39.13-py3-none-any.whl", hash = "sha256:8e62c5724dc06a1934fde155a2eb48cb851cc17ad0b5142da9eb9e46fe0355d3"},
+    {file = "boto3-1.39.13.tar.gz", hash = "sha256:ace50ccfc4caba235b020e7d36f0191aa399771cb6fe6e34b4359b671aab1a4b"},
 ]
 
 [package.dependencies]
-botocore = ">=1.39.7,<1.40.0"
+botocore = ">=1.39.13,<1.40.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.13.0,<0.14.0"
 
@@ -103,14 +103,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "boto3-stubs"
-version = "1.39.7"
-description = "Type annotations for boto3 1.39.7 generated with mypy-boto3-builder 8.11.0"
+version = "1.39.13"
+description = "Type annotations for boto3 1.39.13 generated with mypy-boto3-builder 8.11.0"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "boto3_stubs-1.39.7-py3-none-any.whl", hash = "sha256:617782e7072b8916f7c8904a8a5bae54f23de844951b50736cfadf9821e58313"},
-    {file = "boto3_stubs-1.39.7.tar.gz", hash = "sha256:1c07c3c9c59f17c29b45d14f8c0c52fdae5986a87ae78467d5171052f49bae4e"},
+    {file = "boto3_stubs-1.39.13-py3-none-any.whl", hash = "sha256:3e98d23da8cb87a97b91ead03c9034f3f48ded9fb49bb35411c2fc74e32c331f"},
+    {file = "boto3_stubs-1.39.13.tar.gz", hash = "sha256:60a3057c3831ea31b9dc432f79a4ce219bce5712a58c43e59a558065fa164a07"},
 ]
 
 [package.dependencies]
@@ -169,7 +169,7 @@ bedrock-data-automation-runtime = ["mypy-boto3-bedrock-data-automation-runtime (
 bedrock-runtime = ["mypy-boto3-bedrock-runtime (>=1.39.0,<1.40.0)"]
 billing = ["mypy-boto3-billing (>=1.39.0,<1.40.0)"]
 billingconductor = ["mypy-boto3-billingconductor (>=1.39.0,<1.40.0)"]
-boto3 = ["boto3 (==1.39.7)"]
+boto3 = ["boto3 (==1.39.13)"]
 braket = ["mypy-boto3-braket (>=1.39.0,<1.40.0)"]
 budgets = ["mypy-boto3-budgets (>=1.39.0,<1.40.0)"]
 ce = ["mypy-boto3-ce (>=1.39.0,<1.40.0)"]
@@ -538,14 +538,14 @@ xray = ["mypy-boto3-xray (>=1.39.0,<1.40.0)"]
 
 [[package]]
 name = "botocore"
-version = "1.39.7"
+version = "1.39.13"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "botocore-1.39.7-py3-none-any.whl", hash = "sha256:1d11ba9f3cb46856bb541ed010db160093201a224d21ef854249513ae3af7e77"},
-    {file = "botocore-1.39.7.tar.gz", hash = "sha256:431e342ef97ecb387cea9df1ae8c4e0edc1b0c9c50d2e121cca77699f24f8dc1"},
+    {file = "botocore-1.39.13-py3-none-any.whl", hash = "sha256:6318ae28984d05aaabe92160446d37a2c498951b34a4d5431bc1ec7eb0376417"},
+    {file = "botocore-1.39.13.tar.gz", hash = "sha256:ee8053f34e425a40843daccfa78820d6891f0d4f85fc647ab98f9ba28c36f9e7"},
 ]
 
 [package.dependencies]
@@ -1046,14 +1046,14 @@ smmap = ">=3.0.1,<6"
 
 [[package]]
 name = "gitpython"
-version = "3.1.44"
+version = "3.1.45"
 description = "GitPython is a Python library used to interact with Git repositories"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "GitPython-3.1.44-py3-none-any.whl", hash = "sha256:9e0e10cda9bed1ee64bc9a6de50e7e38a9c9943241cd7f585f6df3ed28011110"},
-    {file = "gitpython-3.1.44.tar.gz", hash = "sha256:c87e30b26253bf5418b01b0660f818967f3c503193838337fe5e573331249269"},
+    {file = "gitpython-3.1.45-py3-none-any.whl", hash = "sha256:8908cb2e02fb3b93b7eb0f2827125cb699869470432cc885f019b8fd0fccff77"},
+    {file = "gitpython-3.1.45.tar.gz", hash = "sha256:85b0ee964ceddf211c41b9f27a49086010a190fd8132a24e21f362a4b36a791c"},
 ]
 
 [package.dependencies]
@@ -2012,14 +2012,14 @@ files = [
 
 [[package]]
 name = "s3transfer"
-version = "0.13.0"
+version = "0.13.1"
 description = "An Amazon S3 Transfer Manager"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "s3transfer-0.13.0-py3-none-any.whl", hash = "sha256:0148ef34d6dd964d0d8cf4311b2b21c474693e57c2e069ec708ce043d2b527be"},
-    {file = "s3transfer-0.13.0.tar.gz", hash = "sha256:f5e6db74eb7776a37208001113ea7aa97695368242b364d73e91c981ac522177"},
+    {file = "s3transfer-0.13.1-py3-none-any.whl", hash = "sha256:a981aa7429be23fe6dfc13e80e4020057cbab622b08c0315288758d67cabc724"},
+    {file = "s3transfer-0.13.1.tar.gz", hash = "sha256:c3fdba22ba1bd367922f27ec8032d6a1cf5f10c934fb5d68cf60fd5a23d936cf"},
 ]
 
 [package.dependencies]
