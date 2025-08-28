@@ -32,7 +32,7 @@ class AbstractInstaller(ABC):
     """Base object for configuration of install-config"""
     # pylint: disable=too-many-instance-attributes
 
-    __env: Environment | None = None
+    _env: Environment | None = None
 
     # pylint: disable=too-many-arguments
     def __init__(self,
@@ -117,29 +117,29 @@ class AbstractInstaller(ABC):
     def process_template(self):
         """Method executes creation of install-config.yaml"""
         self._resolve_network_type()
-        with open(self.pull_secret_file) as ps_file:
+        with open(self.pull_secret_file, encoding="utf-8") as ps_file:
             self.pull_secret = ps_file.read()
-        with open(self.ssh_key_file) as key_file:
+        with open(self.ssh_key_file, encoding="utf-8") as key_file:
             self.ssh_key = key_file.read()
         if self.certificate_bundle_file is not None:
-            with open(self.certificate_bundle_file) as cert_file:
+            with open(self.certificate_bundle_file, encoding="utf-8") as cert_file:
                 self.certificate_bundle = cert_file.read()
         template = AbstractInstaller.get_environment().get_template(self.get_template_name())
         result = template.render(self.__dict__)
-        with open(f"{self.cluster_name}/install-config.yaml", "w") as yaml_file:
+        with open(f"{self.cluster_name}/install-config.yaml", "w", encoding="utf-8") as yaml_file:
             yaml_file.write(result)
 
     @classmethod
     def get_environment(cls) -> Environment:
         """Method loads jinja templates"""
-        if cls.__env is None:
-            cls.__env = Environment(loader=PackageLoader("osia.installer"))
-        return cls.__env
+        if cls._env is None:
+            cls._env = Environment(loader=PackageLoader("osia.installer"))
+        return cls._env
 
 
 class _AbstractInstaller(Protocol):
     """Base object for configuration of install-config"""
-    __env: Environment | None
+    _env: Environment | None
 
     # pylint: disable=too-many-arguments
     def __init__(self,

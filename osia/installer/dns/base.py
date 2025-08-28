@@ -33,7 +33,7 @@ class DNSProvider:
     @classmethod
     def register_provider(cls, name: str, clazz: type[_DNSUtil]):
         """Method to dynamically register new implementation of DNSUtil"""
-        cls.instance().__add_provider(name, clazz)
+        cls.instance()._add_provider(name, clazz)
 
     @classmethod
     def instance(cls) -> DNSProvider:
@@ -45,7 +45,7 @@ class DNSProvider:
     def __init__(self) -> None:
         self.providers: dict[str, type[_DNSUtil]] = {}
 
-    def __add_provider(self, name: str, clazz: type[_DNSUtil]):
+    def _add_provider(self, name: str, clazz: type[_DNSUtil]):
         self.providers[name] = clazz
 
     def __getitem__(self, name: str) -> type[_DNSUtil]:
@@ -120,12 +120,12 @@ class DNSUtil(ABC):
         """Method stores current configuration on DNS provider to $provider_name.json"""
         if not self.modified:
             return
-        with open(f"{out_dir}/{self.provider_name()}.json", "w") as output:
+        with open(f"{out_dir}/{self.provider_name()}.json", "w", encoding="utf-8") as output:
             json.dump(self, output, default=lambda o: o.__dict__)
 
     def unmarshall(self, in_dir: str):
         """Method loads stored configuration of DNS into provider object"""
-        with open(f"{in_dir}/{self.provider_name()}.json") as in_stream:
+        with open(f"{in_dir}/{self.provider_name()}.json", encoding="utf-8") as in_stream:
             dns_conf = json.load(in_stream)
             for k in dns_conf:
                 setattr(self, k, dns_conf[k])

@@ -49,11 +49,11 @@ def read_config(args: argparse.Namespace, default_args: dict) -> dict:
     """
     Reads config from Dynaconf and merges it with arguments provided via commandline.
     """
-    result = {'cloud': None,
-              'dns': None,
-              'cloud_name': None,
+    result = {'cloud': {},
+              'dns': {},
+              'cloud_name': {},
               'cluster_name': args.cluster_name}
-    if not args.__contains__('cloud'):
+    if 'cloud' not in args:
         return result
     defaults = settings.as_dict()
 
@@ -83,7 +83,7 @@ def read_config(args: argparse.Namespace, default_args: dict) -> dict:
              if vars(args)[j] is not None}
         )
 
-        if 'credentials_file' in result['cloud'].keys():
+        if 'credentials_file' in result['cloud']:
             config = configparser.ConfigParser()
             config.read(result['cloud']['credentials_file'])
 

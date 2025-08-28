@@ -47,18 +47,18 @@ def _load_connection_openstack(conn_name: str, args=None) -> Connection:
 
 def _update_json(json_file: str, fip: str):
     res = None
-    with open(json_file) as inp:
+    with open(json_file, encoding="utf-8") as inp:
         res = json.load(inp)
 
     res['fips'].append(fip)
-    with open(json_file, "w") as out:
+    with open(json_file, "w", encoding="utf-8") as out:
         json.dump(res, out)
 
 
 def delete_fips(fips_file: Path):
     """Deletes floating ips stored in configuration file"""
     fips = None
-    with open(fips_file) as fi_file:
+    with open(fips_file, encoding="utf-8") as fi_file:
         fips = json.load(fi_file)
     connection = _load_connection_openstack(fips['cloud'])
     os_fips = [j for k in fips['fips'] for j in connection.network.ips(floating_ip_address=k)]
@@ -72,7 +72,7 @@ def delete_image(fips_file, cluster_name):
     cluster.
     If last associated cluster was removed, the image is deleted"""
     fips = None
-    with open(fips_file) as json_file:
+    with open(fips_file, encoding="utf-8") as json_file:
         fips = json.load(json_file)
     if fips.get('image', None) is None:
         return
@@ -137,7 +137,7 @@ def _get_floating_ip(osp_connection: Connection,
     if path.exists(f"{cluster_name}/fips.json"):
         _update_json(f"{cluster_name}/fips.json", fip.floating_ip_address)
     else:
-        with open(f"{cluster_name}/fips.json", "w") as fips:
+        with open(f"{cluster_name}/fips.json", "w", encoding="utf-8") as fips:
             conf = {'cloud': cloud, 'fips': [fip.floating_ip_address]}
             json.dump(conf, fips)
     return fip
@@ -175,7 +175,7 @@ def upload_uniq_image(osp_connection: Connection,
     logging.info("Upload finished")
     image = osp_connection.image.find_image(image_name)
     logging.info("Image uploaded as %s", image.name)
-    with open(Path(cluster_name).joinpath("fips.json"), "w") as fips:
+    with open(Path(cluster_name).joinpath("fips.json"), "w", encoding="utf-8") as fips:
         obj = {'cloud': cloud, 'fips': [], 'image': image_name}
         json.dump(obj, fips)
     return image.name
@@ -220,7 +220,7 @@ def resolve_image(osp_connection: Connection,
             logging.warning("Image disappeared while metadata were written, trying again")
             logging.debug("Openstack error: %s", err)
             return resolve_image(osp_connection, cloud, cluster_name, images_dir, installer, err)
-    with open(Path(cluster_name).joinpath("fips.json"), "w") as fips:
+    with open(Path(cluster_name).joinpath("fips.json"), "w", encoding="utf-8") as fips:
         obj = {'cloud': cloud, 'fips': [], 'image': image_name}
         json.dump(obj, fips)
     return image.name

@@ -120,14 +120,6 @@ def get_prod_url(version: str, arch: str, fips: bool = False,
     return get_url(PROD_ROOT.format(arch) + version + "/", arch, fips, rhel_version)
 
 
-def _get_storage_path(version: str, install_base: str) -> str:
-    path = Path(install_base)
-    spec_path = path.joinpath(version)
-    if not spec_path.exists():
-        spec_path.mkdir()
-    return spec_path.as_posix()
-
-
 def _extract_tar(buffer: _TemporaryFileWrapper[bytes], target: str) -> Path:
     result = None
     with tarfile.open(buffer.name) as tar:
