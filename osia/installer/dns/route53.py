@@ -79,11 +79,17 @@ class Route53Provider(DNSUtil):
 
     def add_api_domain(self, instance: _AbstractInstaller):
         self.api_ip = instance.get_api_ip()
-        self._execute_command('api', 'CREATE', self.api_ip)
+        if self.api_ip is not None:
+            self._execute_command('api', 'CREATE', self.api_ip)
+        else:
+            logging.info("API IP not available yet, will be set after cluster creation")
 
     def add_apps_domain(self, instance: _AbstractInstaller):
         self.apps_ip = instance.get_apps_ip()
-        self._execute_command('*.apps', 'CREATE', self.apps_ip)
+        if self.apps_ip is not None:
+            self._execute_command('*.apps', 'CREATE', self.apps_ip)
+        else:
+            logging.info("Apps IP not available yet, will be set after cluster creation")
 
     def delete_domains(self):
         if self.api_ip is not None:
