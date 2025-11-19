@@ -22,7 +22,7 @@ $ pip install osia
 
 __Main features__
 
-* Find empty region in aws to install opneshift on.
+* Find empty region in aws to install OpenShift on.
 * Find feasible network in OpenStack and allocate FIPs before installation happens.
 * Generate `install-config.yaml` from predefined defaults.
 * Store generated files for deletion to git repository and push changes right after the cluster is installed.
