@@ -34,4 +34,4 @@ dist: setup_poetry
 release: dist
 	poetry publish
 
-.PHONY: update clean all check black-check pylint flake8 mypy tests
+.PHONY: all black-check check clean dist flake8 mypy pylint release setup_poetry update
