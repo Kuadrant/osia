@@ -139,6 +139,7 @@ def _merge_dictionaries(from_args):
     if result.get('cloud'):
         # pylint: disable=unsupported-assignment-operation
         result['cloud']['installer'] = result['installer']
+        result['cloud']['installer_arch'] = from_args.installer_arch
     return result
 
 

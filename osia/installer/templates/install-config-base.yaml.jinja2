@@ -19,7 +19,8 @@ baseDomain: {{ base_domain }}
   {{ certificate_bundle | indent(width=2) }}{% endif %}
 {% if enable_fips %}fips: true{% endif %}
 compute:
-- hyperthreading: Enabled
+- {% if installer_arch %}architecture: {{ installer_arch }}{% endif %}
+  hyperthreading: Enabled
   name: worker
 {% if worker_flavor %}  platform:
     {% block deploymentType %}{% endblock %}:
@@ -27,7 +28,8 @@ compute:
 {% else %}  platform: {}{% endif %}
   replicas: {{ worker_replicas }}
 controlPlane:
-  hyperthreading: Enabled
+  {% if installer_arch %}architecture: {{ installer_arch }}
+  {% endif %}hyperthreading: Enabled
   name: master
 {% if master_flavor %}  platform:
     {{ self.deploymentType() }}:
