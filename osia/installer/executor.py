@@ -29,12 +29,16 @@ class InstallerExecutionException(Exception):
         super().__init__(self, *args, **kwargs)
 
 
-def execute_installer(installer, base_path, operation, os_image=None, aws_credentials=None):
+def execute_installer(installer, base_path, operation, os_image=None, aws_credentials=None, release_image=None):
     """Function executes actual installation of OpenShift"""
     additional_env = environ.copy()
 
     if os_image is not None and os_image:
         additional_env.update({'OPENSHIFT_INSTALL_OS_IMAGE_OVERRIDE': os_image})
+
+    if release_image is not None and release_image:
+        additional_env.update({'OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE': release_image})
+        logging.info("Using release image override: %s", release_image)
 
     if aws_credentials is not None:
         if 'aws_access_key_id' in aws_credentials and aws_credentials['aws_access_key_id']:
@@ -89,7 +93,8 @@ def install_cluster(cloud_provider,
     try:
         execute_installer(installer, cluster_name, 'create',
                           os_image=getattr(inst, 'os_image', None),
-                          aws_credentials=aws_creds)
+                          aws_credentials=aws_creds,
+                          release_image=getattr(inst, 'release_image_override', None))
     except InstallerExecutionException as exception:
         logging.error(exception)
         if inst.check_clean():

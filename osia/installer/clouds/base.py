@@ -50,6 +50,7 @@ class AbstractInstaller(ABC):
                  enable_fips=False,
                  installer=None,
                  cluster_architecture=None,
+                 release_image_override=None,
                  **unused_kwargs):
         self.cluster_name = cluster_name
         self.base_domain = base_domain
@@ -68,6 +69,7 @@ class AbstractInstaller(ABC):
         self.installer = installer
         self.enable_fips = enable_fips
         self.cluster_architecture = cluster_architecture
+        self.release_image_override = release_image_override
         self.ocp_version = None
         self.network_type = "OVNKubernetes"
 
@@ -103,6 +105,17 @@ class AbstractInstaller(ABC):
             self.ocp_version = ver_string
             logging.info("Resolved installed version as %s", self.ocp_version)
 
+    def _resolve_release_image(self):
+        """Auto-detect release image URL if cluster_architecture is specified but release_image_override is not"""
+        if self.cluster_architecture and not self.release_image_override:
+            self._resolve_version()
+            # Map architecture names for release image
+            arch_map = {'arm64': 'aarch64', 'amd64': 'x86_64', 'aarch64': 'aarch64', 'x86_64': 'x86_64'}
+            release_arch = arch_map.get(self.cluster_architecture, self.cluster_architecture)
+            self.release_image_override = f"quay.io/openshift-release-dev/ocp-release:{self.ocp_version}-{release_arch}"
+            logging.info("Auto-detected release image override: %s", self.release_image_override)
+        return self.release_image_override
+
     def _resolve_network_type(self):
         self._resolve_version()
         ver = Version(self.ocp_version)
@@ -119,6 +132,7 @@ class AbstractInstaller(ABC):
     def process_template(self):
         """Method executes creation of install-config.yaml"""
         self._resolve_network_type()
+        self._resolve_release_image()
         with open(self.pull_secret_file, encoding="utf-8") as ps_file:
             self.pull_secret = ps_file.read()
         with open(self.ssh_key_file, encoding="utf-8") as key_file:

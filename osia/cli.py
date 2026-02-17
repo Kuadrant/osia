@@ -52,6 +52,7 @@ ARGUMENTS: dict = {
         'base_domain': {'help': 'Base domain for the cluster', 'type': str},
         'cluster_architecture': {'help': 'Architecture of the cluster (amd64 or arm64)', 'type': str,
                                  'choices': ['amd64', 'arm64']},
+        'release_image_override': {'help': 'Override release image URL (auto-detected from cluster_architecture if not specified)', 'type': str},
         'master_flavor': {'help': 'Flavor used for master nodes'},
         'master_replicas': {'help': 'Number of replicas for master nodes', 'type': int},
         'pull_secret_file': {'help': 'File containing pull secret from `cloud.redhat.com`'},
