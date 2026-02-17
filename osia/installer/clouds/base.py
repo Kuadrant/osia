@@ -49,6 +49,7 @@ class AbstractInstaller(ABC):
                  skip_clean=False,
                  enable_fips=False,
                  installer=None,
+                 cluster_architecture=None,
                  **unused_kwargs):
         self.cluster_name = cluster_name
         self.base_domain = base_domain
@@ -66,6 +67,7 @@ class AbstractInstaller(ABC):
         self.skip_clean = skip_clean
         self.installer = installer
         self.enable_fips = enable_fips
+        self.cluster_architecture = cluster_architecture
         self.ocp_version = None
         self.network_type = "OVNKubernetes"
 

@@ -50,6 +50,8 @@ ARGUMENTS: dict = {
     'install': {
         'os_image': {'help': 'Image to override', 'type': str},
         'base_domain': {'help': 'Base domain for the cluster', 'type': str},
+        'cluster_architecture': {'help': 'Architecture of the cluster (amd64 or arm64)', 'type': str,
+                                 'choices': ['amd64', 'arm64']},
         'master_flavor': {'help': 'Flavor used for master nodes'},
         'master_replicas': {'help': 'Number of replicas for master nodes', 'type': int},
         'pull_secret_file': {'help': 'File containing pull secret from `cloud.redhat.com`'},
