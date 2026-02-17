@@ -110,33 +110,16 @@ def get_devel_url(version: str, arch: str, fips: bool = False,
     return get_url(req.url, arch, fips, rhel_version)
 
 
-def _normalize_arch_for_url(arch: str) -> str:
-    """Normalize architecture name for mirror URL paths.
-    The OpenShift mirror uses specific architecture names in URLs.
-    """
-    arch_map = {
-        'arm64': 'aarch64',
-        'aarch64': 'aarch64',
-        'amd64': 'x86_64',
-        'x86_64': 'x86_64',
-        'ppc64le': 'ppc64le',
-        's390x': 's390x',
-    }
-    return arch_map.get(arch, arch)
-
-
 def get_prev_url(version: str, arch: str, fips: bool = False,
                  rhel_version: str | None = None) -> tuple[str, str | None]:
     """Returns installer url from dev-preview sources"""
-    url_arch = _normalize_arch_for_url(arch)
-    return get_url(PREVIEW_ROOT.format(url_arch) + version + "/", arch, fips, rhel_version)
+    return get_url(PREVIEW_ROOT.format(arch) + version + "/", arch, fips, rhel_version)
 
 
 def get_prod_url(version: str, arch: str, fips: bool = False,
                  rhel_version: str | None = None) -> tuple[str, str | None]:
     """Returns installer url from production sources"""
-    url_arch = _normalize_arch_for_url(arch)
-    return get_url(PROD_ROOT.format(url_arch) + version + "/", arch, fips, rhel_version)
+    return get_url(PROD_ROOT.format(arch) + version + "/", arch, fips, rhel_version)
 
 
 def _extract_tar(buffer: _TemporaryFileWrapper[bytes], target: str) -> Path:
