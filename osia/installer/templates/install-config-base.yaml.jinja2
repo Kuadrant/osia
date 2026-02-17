@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 #}
 apiVersion: v1
-{% if cluster_architecture %}architecture: {{ cluster_architecture }}
-{% endif %}baseDomain: {{ base_domain }}
+baseDomain: {{ base_domain }}
 {% if certificate_bundle %}additionalTrustBundle: |
   {{ certificate_bundle | indent(width=2) }}{% endif %}
 {% if enable_fips %}fips: true{% endif %}
 compute:
 - hyperthreading: Enabled
-  name: worker
+{% if cluster_architecture %}  architecture: {{ cluster_architecture }}
+{% endif %}  name: worker
 {% if worker_flavor %}  platform:
     {% block deploymentType %}{% endblock %}:
       type: {{ worker_flavor }}
@@ -29,7 +29,8 @@ compute:
   replicas: {{ worker_replicas }}
 controlPlane:
   hyperthreading: Enabled
-  name: master
+{% if cluster_architecture %}  architecture: {{ cluster_architecture }}
+{% endif %}  name: master
 {% if master_flavor %}  platform:
     {{ self.deploymentType() }}:
       type: {{ master_flavor }}{% else %}  platform: {}{% endif %}
