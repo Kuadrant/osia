@@ -77,10 +77,15 @@ def read_config(args: argparse.Namespace, default_args: dict) -> dict:
     if args.cloud is not None:
         cloud_defaults = _resolve_cloud_name(args)
         result['cloud_name'] = args.cloud
-        result['cloud'] = cloud_defaults
+        result['cloud'] = cloud_defaults if cloud_defaults is not None else {}
         result['cloud'].update(
             {j: i['proc'](vars(args)[j]) for j, i in default_args['install'].items()
              if vars(args)[j] is not None}
+        )
+        # Merge common args (like credentials_file) from CLI
+        result['cloud'].update(
+            {j: i['proc'](vars(args)[j]) for j, i in default_args['common'].items()
+             if vars(args)[j] is not None and j not in ['cloud', 'cloud_env', 'dns_provider']}
         )
 
         if 'credentials_file' in result['cloud']:
