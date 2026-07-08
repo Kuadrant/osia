@@ -20,6 +20,6 @@ limitations under the License.
     defaultMachinePlatform:
       type: {{ master_flavor }}
       zones: []
-{% if installer_arch %}    architecture: {{ installer_arch }}{% endif %}{% endblock %}
+{% endblock %}
 {% block networkIp %}10.0.0.0/16{% endblock %}
 {% block deploymentType %}aws{% endblock %}

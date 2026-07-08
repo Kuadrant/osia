@@ -15,14 +15,14 @@ limitations under the License.
 #}
 apiVersion: v1
 baseDomain: {{ base_domain }}
-{% if installer_arch %}architecture: {{ installer_arch }}{% endif %}
 {% if certificate_bundle %}additionalTrustBundle: |
   {{ certificate_bundle | indent(width=2) }}{% endif %}
 {% if enable_fips %}fips: true{% endif %}
 compute:
 - hyperthreading: Enabled
   name: worker
-{% if worker_flavor %}  platform:
+{% if installer_arch %}  architecture: {{ installer_arch }}
+{% endif %}{% if worker_flavor %}  platform:
     {% block deploymentType %}{% endblock %}:
       type: {{ worker_flavor }}
 {% else %}  platform: {}{% endif %}
@@ -30,6 +30,8 @@ compute:
 controlPlane:
   hyperthreading: Enabled
   name: master
+{% if installer_arch %}  architecture: {{ installer_arch }}
+{% endif %}
 {% if master_flavor %}  platform:
     {{ self.deploymentType() }}:
       type: {{ master_flavor }}{% else %}  platform: {}{% endif %}
