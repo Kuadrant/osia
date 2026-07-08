@@ -29,12 +29,16 @@ class InstallerExecutionException(Exception):
         super().__init__(self, *args, **kwargs)
 
 
-def execute_installer(installer, base_path, operation, os_image=None):
+def execute_installer(installer, base_path, operation, os_image=None,
+                      aws_access_key_id=None, aws_secret_access_key=None):
     """Function executes actual installation of OpenShift"""
-    additional_env = None
+    additional_env = environ.copy()
     if os_image is not None and os_image:
-        additional_env = environ.copy()
-        additional_env.update({'OPENSHIFT_INSTALL_OS_IMAGE_OVERRIDE': os_image})
+        additional_env['OPENSHIFT_INSTALL_OS_IMAGE_OVERRIDE'] = os_image
+    if aws_access_key_id:
+        additional_env['AWS_ACCESS_KEY_ID'] = aws_access_key_id
+    if aws_secret_access_key:
+        additional_env['AWS_SECRET_ACCESS_KEY'] = aws_secret_access_key
     with Popen([installer, operation, 'cluster', '--dir', base_path],
                env=additional_env, universal_newlines=True) as proc:
         proc.wait()
@@ -70,13 +74,19 @@ def install_cluster(cloud_provider,
 
     inst.process_template()
 
+    aws_creds = {}
+    if 'aws_access_key_id' in configuration:
+        aws_creds['aws_access_key_id'] = configuration['aws_access_key_id']
+        aws_creds['aws_secret_access_key'] = configuration['aws_secret_access_key']
+
     try:
         execute_installer(installer, cluster_name, 'create',
-                          os_image=getattr(inst, 'os_image', None))
+                          os_image=getattr(inst, 'os_image', None),
+                          **aws_creds)
     except InstallerExecutionException as exception:
         logging.error(exception)
         if inst.check_clean():
-            delete_cluster(cluster_name, installer)
+            delete_cluster(cluster_name, installer, **aws_creds)
         # Do not continue in case of installer failure
         return
 
@@ -88,7 +98,8 @@ def install_cluster(cloud_provider,
         dns_prov.marshall(cluster_name)
 
 
-def delete_cluster(cluster_name, installer):
+def delete_cluster(cluster_name, installer,
+                   aws_access_key_id=None, aws_secret_access_key=None):
     """Function is the controller of all actions leading to the
     cluster's deletion."""
     dns_prov = DNSProvider.instance().load(cluster_name)
@@ -102,7 +113,9 @@ def delete_cluster(cluster_name, installer):
     for k in [1, 2]:
         try:
             logging.debug("Attempt to clean #%d", k)
-            execute_installer(installer, cluster_name, 'destroy')
+            execute_installer(installer, cluster_name, 'destroy',
+                              aws_access_key_id=aws_access_key_id,
+                              aws_secret_access_key=aws_secret_access_key)
             break
         except InstallerExecutionException as exception:
             logging.error("Re-executing installer due to error %s", exception)
