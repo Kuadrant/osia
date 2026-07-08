@@ -125,8 +125,13 @@ def _resolve_installer(from_args):
             # fine to run normal installer on FIPS enabled RHEL
             from_args.enable_fips = False
 
+    download_arch = from_args.installer_arch
+    cluster_arch = getattr(from_args, 'cluster_arch', None)
+    if cluster_arch and cluster_arch != from_args.installer_arch:
+        download_arch = 'multi'
+
     return download_installer(from_args.installer_version,
-                              from_args.installer_arch,
+                              download_arch,
                               from_args.installers_dir,
                               from_args.installer_source,
                               rhel_version=rhel_version,
