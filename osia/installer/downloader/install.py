@@ -81,7 +81,8 @@ def get_url(directory: str, arch: str, fips: bool = False,
 
             if not fips and match.group('platform') == os_name:
                 if (local_arch == match.group('architecture')) \
-                        or (local_arch == arch and not match.group('architecture')):
+                        or (not match.group('architecture')
+                            and (local_arch == arch or arch == 'multi')):
                     installer = lst.url + k.get('href')
                     break
     else:
@@ -111,13 +112,21 @@ def get_devel_url(version: str, arch: str, fips: bool = False,
 def get_prev_url(version: str, arch: str, fips: bool = False,
                  rhel_version: str | None = None) -> tuple[str, str | None]:
     """Returns installer url from dev-preview sources"""
-    return get_url(PREVIEW_ROOT.format(arch) + version + "/", arch, fips, rhel_version)
+    base = PREVIEW_ROOT.format(arch) + version + "/"
+    if arch == "multi":
+        _, host_arch = _current_platform()
+        base += host_arch + "/"
+    return get_url(base, arch, fips, rhel_version)
 
 
 def get_prod_url(version: str, arch: str, fips: bool = False,
                  rhel_version: str | None = None) -> tuple[str, str | None]:
     """Returns installer url from production sources"""
-    return get_url(PROD_ROOT.format(arch) + version + "/", arch, fips, rhel_version)
+    base = PROD_ROOT.format(arch) + version + "/"
+    if arch == "multi":
+        _, host_arch = _current_platform()
+        base += host_arch + "/"
+    return get_url(base, arch, fips, rhel_version)
 
 
 def _extract_tar(buffer: _TemporaryFileWrapper[bytes], target: str) -> Path:
