@@ -167,7 +167,9 @@ def _exec_delete_cluster(args):
     if not args.skip_git:
         storage.check_repository()
 
-    delete_cluster(conf['cluster_name'], conf['installer'])
+    delete_cluster(conf['cluster_name'], conf['installer'],
+                   aws_access_key_id=conf['cloud'].get('aws_access_key_id'),
+                   aws_secret_access_key=conf['cloud'].get('aws_secret_access_key'))
 
     if not args.skip_git:
         storage.delete_directory(conf['cluster_name'])
