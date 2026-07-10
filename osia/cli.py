@@ -125,13 +125,8 @@ def _resolve_installer(from_args):
             # fine to run normal installer on FIPS enabled RHEL
             from_args.enable_fips = False
 
-    download_arch = from_args.installer_arch
-    cluster_arch = getattr(from_args, 'cluster_arch', None)
-    if cluster_arch and cluster_arch != from_args.installer_arch:
-        download_arch = 'multi'
-
     return download_installer(from_args.installer_version,
-                              download_arch,
+                              from_args.installer_arch,
                               from_args.installers_dir,
                               from_args.installer_source,
                               rhel_version=rhel_version,
@@ -197,9 +192,6 @@ def _create_commons() -> argparse.ArgumentParser:
         (['--installer-arch'], {"help": 'Architecture of downloader to be downloaded',
                                 "choices": [ARCH_AMD, ARCH_X86_64, ARCH_ARM, ARCH_AARCH64, ARCH_PPC, ARCH_S390X],
                                 "default": ARCH_AMD, "type": str}),
-        (['--cluster-arch'], {"help": 'Architecture of the cluster nodes (overrides --installer-arch for install-config)',
-                              "choices": [ARCH_AMD, ARCH_X86_64, ARCH_ARM, ARCH_AARCH64, ARCH_PPC, ARCH_S390X],
-                              "default": None, "type": str}),
         (['--installer-source'], {"type": str, "help": 'Set the source to search for installer',
                                   "choices": ["prod", "devel", "prev"], "default": 'prod'}),
         (['--installers-dir'], {"help": 'Folder where installers are stored', "required": False,
