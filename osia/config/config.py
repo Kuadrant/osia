@@ -82,11 +82,7 @@ def read_config(args: argparse.Namespace, default_args: dict) -> dict:
             {j: i['proc'](vars(args)[j]) for j, i in default_args['install'].items()
              if vars(args)[j] is not None}
         )
-        # Add cluster architecture to cloud configuration
-        # --cluster-arch overrides --installer-arch for the install-config
-        if hasattr(args, 'cluster_arch') and args.cluster_arch is not None:
-            result['cloud']['installer_arch'] = args.cluster_arch
-        elif hasattr(args, 'installer_arch') and args.installer_arch is not None:
+        if hasattr(args, 'installer_arch') and args.installer_arch is not None:
             result['cloud']['installer_arch'] = args.installer_arch
 
         if 'credentials_file' in result['cloud']:
@@ -98,7 +94,7 @@ def read_config(args: argparse.Namespace, default_args: dict) -> dict:
                 "aws_secret_access_key": config["default"]["aws_secret_access_key"],
             })
 
-        if result['dns'] is not None:
+        if result['dns'] is not None and 'conf' in result['dns']:
             result['dns']['conf'].update({
                 'cluster_name': args.cluster_name,
                 'base_domain': result['cloud']['base_domain']
